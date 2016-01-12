@@ -1,0 +1,194 @@
+
+package wordlist;
+
+import java.lang.String;
+
+public class WordList {
+
+    private int size;
+    private int cap;
+    private String[] words;
+    
+    
+    public WordList(int capacity) {
+        
+        size = 0;
+        cap = capacity;
+        words  = new String[cap];
+        
+    }
+    
+    public WordList(String[] arrayOfWords) {
+        
+        
+        cap = (arrayOfWords.length)*2;
+        words  = new String[cap];
+        
+        for (int i=0; i<cap/2; i++)
+            this.insert(arrayOfWords[i]);
+         
+    }
+    
+     
+    public int getSize() {
+          
+        return size;     
+    }
+    
+      
+    public int getCapacity() {
+          
+        return cap;
+          
+    }
+      
+    public String getWordAt(int i) {
+          
+        if( i<0 || i>=size )
+                throw new ArrayIndexOutOfBoundsException("Invalid index");
+        return words[i];
+          
+    }
+      
+    public void insert(String newword) {
+          
+        if (size>0 && find(newword) == -1) {
+            
+            if (size == cap) {
+                
+                String[] temp = new String[cap*2];
+                
+                for (int i=0; i<size; i++) 
+                    temp[i] = words[i];
+
+                words = temp;
+                cap *= 2;
+     
+            }
+            
+            words[size] = newword;
+            size+=1;
+        
+            String temp = null;
+            
+            for(int i=size-1; i >= 0; i--) {
+
+                if(newword.compareTo(words[i])<0) { 
+
+                    temp = words[i];
+                    words[i] = newword;
+                    words[i+1] = temp;                
+                }
+            }           
+
+            
+        }
+        
+        if (find(newword) == -1 && size==0) {
+          words[0] = newword;
+          size+=1;
+        
+        }
+    }
+      
+   public int find(String word) {
+        
+        int start = 0;
+        int end = size-1;
+        int mid;
+        int check;
+        
+        
+        
+        while ((end-start)>1) {
+            
+            mid = ((end-start)/2) + start;
+            check = words[mid].compareTo(word); 
+            
+            if (check == 0) 
+                return mid;
+            
+            if (check <0)
+                start = mid;
+            
+            if (check >0)
+                end = mid;
+     
+        }   
+        
+         
+        if ((words[start]) != null) {   
+            
+            for (int i=start; i<=end; i++) {
+                
+                if ((words[i].compareTo(word)) == 0) 
+                return i;
+                
+            }
+        
+        }  
+
+        return -1;
+    }
+       
+    public void remove(String word) {
+        
+        if (find(word) != -1) {
+            
+            for (int i = find(word); i<=size-1; i++) 
+                words[i] = words[i+1];
+              
+   
+        }
+        
+    }
+    
+    public WordList sublist(char init, char fin) {
+        
+        String[] subwords = new String[size];
+        WordList newArray;
+        int sizecount = 0;
+        
+        if (size != 0) {
+            
+            newArray = new WordList(cap);
+            
+            for(int i=0;i<size;i++) {
+        
+                if((words[i].charAt(0)) >= init && (words[i].charAt(0)) <= fin) {
+                    newArray.insert(words[i]);
+                    sizecount++;
+                
+                }
+            }
+   
+            newArray.cap = sizecount*2;
+        }
+        
+        else 
+            newArray = new WordList(cap);
+        
+        return newArray;
+ 
+    }
+    
+    
+    public String toString() {
+        
+        String longString = "";
+	
+        if(size==0)
+	    longString = "The list is empty";
+	
+        else
+	    longString = words[0];
+        
+        for (int i = 1; i < size; i++) {
+            longString =longString + "\n" + words[i];
+        }
+        return longString;
+    }
+    
+    
+                
+}

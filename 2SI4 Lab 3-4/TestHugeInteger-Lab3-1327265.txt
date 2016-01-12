@@ -1,0 +1,161 @@
+
+package hugeinteger;
+
+import java.util.Random;
+
+
+public class TestHugeInteger {
+
+    public static void main(String[] args) {
+          
+         HugeInteger obj1, obj2, obj3;
+         obj2= new HugeInteger("5884");
+         obj3= new HugeInteger("5885");
+         obj1=obj2.add(obj3);
+         System.out.println("Test 1 - Add Method:\nTesting for both positive same size\n"+obj1.toString());       
+         System.out.println("\n*************************************************************\n");
+         
+         obj2= new HugeInteger("-1234");
+         obj3= new HugeInteger("-2324");
+         obj1=obj2.add(obj3);
+         System.out.println("Test 2 - Add Method:\nTesting for both negative same size\n"+obj1.toString());       
+         System.out.println("\n*************************************************************\n");
+         
+ 
+         obj2= new HugeInteger("9000");
+         obj3= new HugeInteger("-3885");
+         obj1=obj2.add(obj3);
+         System.out.println("Test 3 - Add Method:\nTesting for 1 positive 1 negative (implicit subtraction)\n"+obj1.toString());       
+         System.out.println("\n*************************************************************\n");
+ 
+         obj2= new HugeInteger("345674657");
+         obj3= new HugeInteger("23545");
+         obj1=obj2.add(obj3);
+         System.out.println("Test 4 - Add Method:\nTesting for both positive, different sizes\n"+obj1.toString());       
+         System.out.println("\n*************************************************************\n");
+         
+         
+         HugeInteger obj4, obj5, obj6;
+          
+         obj6= new HugeInteger("812363215");
+         obj5= new HugeInteger("912345678");
+         obj4=obj5.subtract(obj6);
+         System.out.println("Test 5 - Subtract Method:\nTesting for both positive\n"+obj4.toString());       
+         System.out.println("\n*************************************************************\n"); 
+          
+         obj5= new HugeInteger("812363215");
+         obj6= new HugeInteger("-912345678");
+         obj4=obj5.subtract(obj6);
+         System.out.println("Test 6 - Subtract Method:\nTesting for minuend pos and subtrahend neg\n"+obj4.toString());       
+         System.out.println("\n*************************************************************\n"); 
+          
+         obj5= new HugeInteger("-812363215");
+         obj6= new HugeInteger("912345678");
+         obj4=obj5.subtract(obj6);
+         System.out.println("Test 7 - Subtract Method:\nTesting for minuend neg and subtrahend pos\n"+obj4.toString());       
+         System.out.println("\n*************************************************************\n"); 
+          
+         obj5= new HugeInteger("-812363215");
+         obj6= new HugeInteger("-912345678");
+         obj4=obj5.subtract(obj6);
+         System.out.println("Test 8 - Subtract Method:\nTesting for both negative\n"+obj4.toString());       
+         System.out.println("\n*************************************************************\n"); 
+          
+         obj5= new HugeInteger("812363215");
+         obj6= new HugeInteger("45678");
+         obj4=obj5.subtract(obj6);
+         System.out.println("Test 9 - Subtract Method:\nTesting for different lengths\n"+obj4.toString());       
+         System.out.println("\n*************************************************************\n"); 
+          
+         obj5= new HugeInteger("33215");
+         obj6= new HugeInteger("45678");
+         obj4=obj5.subtract(obj6);
+         System.out.println("Test 10 - Subtract Method:\nTesting for minuend smaller than subtrahend\n"+obj4.toString());       
+         System.out.println("\n*************************************************************\n"); 
+         
+         HugeInteger obj7, obj8, obj9;
+             
+         obj8= new HugeInteger("9999");
+         obj9= new HugeInteger("9999");
+         obj7=obj8.multiply(obj9);
+         System.out.println("Test 11 - Multiply Method:\nTesting for both positive, same length\n"+obj7.toString());       
+         System.out.println("\n*************************************************************\n");
+
+ 
+         obj8= new HugeInteger("5");
+         obj9= new HugeInteger("3414");
+         obj7=obj8.multiply(obj9);
+         System.out.println("Test 12 - Multiply Method:\nTesting for both positive, different lengths\n"+obj7.toString());       
+         System.out.println("\n*************************************************************\n");
+
+             
+         obj8= new HugeInteger("9");
+         obj9= new HugeInteger("-5644");
+         obj7=obj8.multiply(obj9);
+         System.out.println("Test 13 - Multiply Method:\nTesting for 1 pos 1 neg diff size\n"+obj7.toString());       
+         System.out.println("\n*************************************************************\n");   
+
+         
+         obj8= new HugeInteger("-34");
+         obj9= new HugeInteger("-45784");
+         obj7=obj8.multiply(obj9);
+         System.out.println("Test 14 - Multiply Method:\nTesting for 2 neg diff size\n"+obj7.toString());       
+         System.out.println("\n*************************************************************\n"); 
+         
+         obj8= new HugeInteger("0");
+         obj9= new HugeInteger("45577");
+         obj7=obj8.multiply(obj9);
+         System.out.println("Test 15 - Multiply Method:\nTesting for zero case\n"+obj7.toString());       
+         System.out.println("\n*************************************************************\n"); 
+      
+        HugeInteger obj10, obj11;
+        int n;
+        
+        obj10= new HugeInteger("812363215");
+        obj11= new HugeInteger("912345678");
+        n=obj10.compareTo(obj11);
+        System.out.println("Test 16 - Sub Method:\nTesting for both pos, same length, smaller\n"+n);       
+        System.out.println("\n*************************************************************\n"); 
+                
+
+        obj10= new HugeInteger("9000");
+        obj11= new HugeInteger("800");
+        n=obj10.compareTo(obj11);
+        System.out.println("Test 17 - Sub Method:\nTesting for both pos, diff length, bigger\n"+n);       
+        System.out.println("\n*************************************************************\n");         
+          
+
+        obj10= new HugeInteger("-900");
+        obj11= new HugeInteger("-800");
+        n=obj10.compareTo(obj11);
+        System.out.println("Test 18 - Sub Method:\nTesting for both pos, same length, smaller\n"+n);       
+        System.out.println("\n*************************************************************\n");         
+    
+        obj10= new HugeInteger("-12345");
+        obj11= new HugeInteger("-523454");
+        n=obj10.compareTo(obj11);
+        System.out.println("Test 19 - Sub Method:\nTesting for both neg, diff length, bigger\n"+n);       
+        System.out.println("\n*************************************************************\n");         
+          
+    
+        obj10= new HugeInteger("9000");
+        obj11= new HugeInteger("-800");
+        n=obj10.compareTo(obj11);
+        System.out.println("Test 20 - Sub Method:\nTesting for 1 pos 1 neg, diff length, bigger\n"+n);       
+        System.out.println("\n*************************************************************\n");         
+        
+
+        obj10= new HugeInteger("900");
+        obj11= new HugeInteger("900");
+        n=obj10.compareTo(obj11);
+        System.out.println("Test 21 - Sub Method:\nTesting for both p, equal\n"+n);       
+        System.out.println("\n*************************************************************\n");
+
+        obj10= new HugeInteger("-988");
+        obj11= new HugeInteger("-988");
+        n=obj10.compareTo(obj11);
+        System.out.println("Test 22 - Sub Method:\nTesting for both neg, equal\n"+n);       
+
+
+    }
+}

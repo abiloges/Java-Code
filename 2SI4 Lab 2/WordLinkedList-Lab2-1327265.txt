@@ -1,0 +1,215 @@
+
+
+package wordlinkedlist;
+
+import java.lang.String;
+
+public class WordLinkedList {
+
+    private int size;
+    private Node front;
+    
+    public WordLinkedList() {
+        
+        size = 0;
+        front = null;
+        
+    }
+    
+    public WordLinkedList(String[] arrayOfWords){
+        
+        for (int i=0; i<(arrayOfWords.length); i++)
+            this.insert(arrayOfWords[i]);
+        
+    }
+    
+    public int getSize() {
+        
+        return size;
+        
+    }
+
+    public String getWordAt(int i) {
+        
+        Node p = front;
+        int counter = 0;
+        
+        if (i >= 0 && i < size) {
+            
+            for (; p.next != null ; p = p.next) {
+                
+                if (counter == i) {
+                    
+                    break;
+                }
+                
+                counter++;
+            }   
+            
+            return p.word;
+        }
+        
+        else 
+            throw new IndexOutOfBoundsException("Invalid index");  
+    }
+    
+    public void insert(String newword){
+        
+        if (size>0 && find(newword) == -1) {
+            
+            Node p = front;
+            Node temp = p;
+            int check = 0;
+            int counter = 0;
+            
+            
+            for (; p.next != null ; p = p.next) {
+            
+                if(newword.compareTo(p.word)<0 && counter == 0) {
+
+                    front = new Node(newword,front);
+                    size+=1;
+                    check+=1;
+                    break;
+                }
+                
+                 if(newword.compareTo(p.next.word)<0) {
+
+                    p.next = new Node(newword,p.next);
+                    size+=1;
+                    check+=1;
+                    break;
+                }
+                
+                counter++;   
+            }
+            
+            if (check == 0) {
+                
+                p.next = new Node(newword,null);
+                size+=1;
+            }
+        }
+        
+        if (size==0) {
+          
+          front = new Node(newword, front);
+          size+=1;
+        }   
+    }
+    
+    
+    public int find(String word) {
+        
+        Node p = front;
+        int counter = 0;
+        
+        for (; p != null ; p = p.next) {
+
+            if (((p.word).compareTo(word)) == 0)
+                return counter;
+            
+            counter++;
+            
+        }
+        
+        return -1;
+        
+    }
+    
+    
+    public String remove(int i) {
+        
+        Node p = front;
+        int counter = 0;
+        String temp = null;
+        
+        if (front != null && (i > 0 && i<size)) {
+
+            for (; p.next != null ; p = p.next) {
+                
+                if (counter == (i-1)) {
+                    
+                    temp = p.next.word;
+                    p.next = p.next.next;
+                    size-=1;
+                    break;
+                }
+                
+                counter++;
+            }
+            
+            return temp;
+        }
+        
+        else if (front != null && i==0) {
+            
+            temp = front.word;
+            front = front.next;
+            size-=1;
+            return temp;
+        }
+        
+        else 
+            throw new IndexOutOfBoundsException("Invalid index");
+        
+    }
+    
+    
+    public void mergeTo(WordLinkedList that) {
+        
+        Node p = that.front;
+        
+        while (p != null) {
+            
+            this.insert(p.word);
+            p = p.next;
+                        
+        }
+        
+        that.front = null;
+        that.size = 0;
+        System.gc();
+        
+    }
+    
+    public String toString() {
+        
+        String longString = "";
+
+        if(size == 0)
+	    
+            longString = "The list is empty";
+        
+        else {
+            
+            Node p = front;
+	    longString = new String("");
+            
+            for (; p.next != null ; p = p.next) {
+                longString =longString +  p.word + "\n";          
+            }
+            
+            longString =longString +  p.word; 
+        }
+        
+        return longString;
+    }
+}
+
+
+
+package wordlinkedlist;
+
+
+class Node {
+    
+    String word ;
+    Node next ;
+
+    public Node (String e , Node n){
+        
+        word = e ;
+        next = n ;
+    }
+}

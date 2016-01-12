@@ -1,0 +1,263 @@
+
+package bstset;
+import java.lang.String;
+
+
+public class BSTSet {
+
+    private TNode root;
+    
+    public BSTSet() {
+        
+        root = null;
+        
+    }
+    
+    public BSTSet(int[] input) {
+
+        for (int i = 0; i<input.length; i++){
+            this.add(input[i]);
+        }
+  
+    }
+    
+   public boolean isIn(int v) {
+        
+        if (findTree(v,root) == 0)
+            return false;
+        
+        return true;
+                    
+    }
+   
+   private int findTree (int e , TNode t) {
+        
+        if(t==null)
+            return 0;
+        
+        if (e<(t.element))
+            return (findTree(e,t.left));
+        
+        if (e>(t.element))
+            return (findTree(e,t.right)); 
+        
+        else
+            return(t.element);
+        
+    }
+    
+   public void add(int v){
+        
+       TNode temp = new TNode(v,null,null);
+        
+       if(root == null)
+            root = new TNode(v,null,null);
+        
+       else
+            insertTree(temp,root);
+    } 
+   
+    private void insertTree(TNode temp,TNode t){
+        
+        if(temp.element < t.element){
+            
+            if(t.left == null){
+                t.left = temp;
+            }
+            else{
+                insertTree(temp,t.left);
+            }   
+        }
+        
+        else if(temp.element>t.element){
+            
+            if(t.right == null){
+                t.right = temp;
+            }
+            else{
+                insertTree(temp,t.right);
+            }
+        }
+    }
+
+    private void removeTree(int v, TNode t) {
+ 
+        int test = 0;
+        TNode temp = new TNode (0,null,null); 
+        TNode temp2 = new TNode (0,null,null);
+        
+        if(v<t.element){
+            removeTree(v, t.left);}
+        
+        else if (v>t.element){
+            removeTree(v,t.right);}
+        
+        else if (t.element == v && (t.left != null && t.right!=null)) {
+             
+             temp = t.right;
+             temp2 = t;
+             while (true){
+                 
+                 if (temp.left == null)
+                    break;
+                 
+                 else if (test == 0){
+                     temp = temp.left;
+                     temp2 = temp2.right;
+                     test = 1;
+                     break;
+                 }
+                 
+                 else if (test==1){
+                     temp = temp.left;
+                     temp2 = temp2.left;
+                 }
+             }  
+             
+             t.element = temp.element;
+             temp2.left = null; 
+        }
+        
+         else if (t.left!=null || t.right!=null) {
+            
+             if (t.left!=null){
+                 t.element = t.left.element;
+                 t.right = t.left.right;
+                 t.left = t.left.left;
+             }
+             
+             else if(t.right!=null){
+                 t.element = t.right.element;
+                 t.left = t.right.left;
+                 t.right = t.right.right;
+                 
+             }
+
+         }
+    }
+    
+    public boolean remove(int v) {
+        
+        if (isIn(v) == true) {
+            
+            removeTree(v,root);
+            return true;
+        }
+        
+        return false;
+
+    }
+    
+    private void merge1(TNode t, BSTSet neww) { 
+
+        neww.add(t.element);
+        
+        if (t.left != null && t.right != null){
+            
+            merge1(t.left, neww);
+            merge1(t.right, neww);
+        }
+        
+        else if (t.left != null)
+            merge1(t.left, neww);
+        
+        else if (t.right != null)
+            merge1(t.right, neww);
+        
+    }
+    
+    private void merge2(TNode t, BSTSet neww, boolean bipolar) {
+         
+        if (isIn(t.element) == bipolar) {
+            
+            neww.add(t.element);
+            
+            if (t.left != null && t.right != null){
+            
+                merge2(t.left, neww, bipolar);
+                merge2(t.right, neww, bipolar);
+            }
+            
+            else if (t.left != null)
+                merge2(t.left, neww, bipolar);
+            
+            else if (t.right != null)
+                merge2(t.right, neww, bipolar);
+        }
+    }
+    
+    public BSTSet union(BSTSet s) {
+        
+        BSTSet newSet = new BSTSet();
+        TNode temp;
+        TNode temp2;
+ 
+        if (root != null) {
+            
+            temp = root;
+            merge1(temp, newSet);
+        }
+        
+        if (s.root != null) {
+ 
+            temp2 = s.root;
+            merge2(temp2, newSet, false);
+            
+        }
+        
+        return newSet;
+    }
+    
+    public BSTSet intersection(BSTSet s) {
+        
+        BSTSet newSet = new BSTSet();
+        TNode temp;
+        
+        if (s.root != null && root != null){
+            
+            temp = s.root;
+            merge2(temp, newSet, true);     
+            
+        }
+        
+        return newSet;
+    }
+    
+    private int Size(TNode t){
+        
+        if(t==null)
+            return 0;
+        else
+            return(Size(t.left) + 1 + Size(t.right));
+    }
+    
+    public int size(){
+        
+        return Size(root);
+    }
+    
+    public void printBSTSet() {
+         
+        if(root==null)
+            System.out.println("The set is empty");
+        
+        else{
+            
+            System.out.print("The set elements are: ");
+            printBSTSet(root);
+            System.out.print("\n");
+        }  
+     }
+     
+    private void printBSTSet(TNode t){
+         
+        if(t!=null){
+
+            printBSTSet(t.left);
+            System.out.print(" " + t.element + ", ");
+            printBSTSet(t.right);
+        }
+    }
+     
+     
+}

@@ -1,0 +1,383 @@
+
+package hugeinteger;
+
+import java.lang.*;
+import java.util.Random;
+
+public class HugeInteger {
+
+    private int size;
+    private int[] hugeint;
+    private int negative;
+    
+    public HugeInteger(){
+        
+        hugeint = null;
+        negative = 0;
+        size = 0;
+    }
+
+    
+    public HugeInteger(String val) {
+        
+        int length = val.length();
+        int start = 0;
+        boolean zeroes = true;
+        int pos = 0;
+        
+        //checking for valid characters
+        
+        for (int i=1; i<length; i++){
+            
+            if ((int)(val.charAt(i))>57 || (int)(val.charAt(i))<48)
+                throw new IndexOutOfBoundsException("Invalid Input");
+        }
+        
+        //checking for valid character first place, either negative or number
+        
+        if (val.charAt(0) == '-'){
+            
+            negative = 1;
+            size = length - 1;
+            start = 1;
+        }    
+        
+        else if ((int)val.charAt(0)>57 || (int)val.charAt(0)<48)
+            throw new IndexOutOfBoundsException("Invalid Input");
+        
+        else 
+            size = length;
+        
+        //finding first nonzero place if not negative
+        
+        if (negative != 1){
+            
+            for (int i=0; i<length; i++) {
+                
+                if ((int)val.charAt(i) != 48){
+                    
+                    start = i;
+                    zeroes = false;
+                    break;
+                }
+
+            } 
+ 
+            size = length-start;
+        }
+        
+        hugeint = new int[size];
+        
+        // all zeroes case
+        if (start == 0 && zeroes == true)
+            size = 1;
+        
+        //copy it backwards so its easier to add (carry over)
+        
+        for (int i=(length-1); i>=start; i--) {
+            
+            hugeint[pos] = (int)val.charAt(i)-48;
+            pos++;
+        }
+      
+    }
+    
+    public HugeInteger(int n) {
+        
+        if (n<1)
+            throw new IndexOutOfBoundsException("Choose a value greater than 1");
+        
+        else {
+            
+            size = n;
+            hugeint = new int[n];
+            Random num = new Random();
+            
+            for (int i=0; i<n; i++)
+                hugeint[i] = num.nextInt(10);
+            
+        }
+        
+        Random num2 = new Random();
+        negative = num2.nextInt(2);
+  
+    }
+    
+    public HugeInteger add(HugeInteger h) {
+        
+        
+        int big = (size >= h.size) ? size: h.size;
+        int diff = Math.abs(size-h.size);
+        int carry = 0;
+        int temp1;
+        int temp2;
+        
+        HugeInteger temp = (size >= h.size)? this: h;
+        
+        HugeInteger sum = new HugeInteger(big+1);
+        
+        if ((negative == 0 && h.negative == 0) || (negative == 1 && h.negative == 1)) {
+        
+            for (int i=0; i<(big-diff); i++) {
+            
+                sum.hugeint[i] = (hugeint[i] + h.hugeint[i] + carry)%10 ;
+            
+                carry = (hugeint[i] + h.hugeint[i] + carry)/10;
+            }
+        
+            if (diff>0){
+            
+                for (int i = big-diff; i<big; i++) {
+                
+                    sum.hugeint[i] = (temp.hugeint[i]+carry)%10;
+                    carry = (temp.hugeint[i]+carry)/10;
+                    
+                }
+            }
+            
+
+            sum.hugeint[big] = (carry != 0)? carry: 0;
+
+            sum.negative = (negative == 1 && h.negative == 1)? 1: 0;
+            
+            sum.size = (sum.hugeint[big] == 0)? sum.size-1: sum.size;
+            
+        }
+        
+        else {
+            
+            temp1 = negative;
+            temp2 = h.negative;
+            negative = 0;
+            h.negative = 0;
+            sum = subtract(h);
+            sum.negative = (compareTo(h)==1)? temp1: temp2;
+            negative = temp1;
+            h.negative = temp2;
+            
+        }
+        
+        
+        
+        return sum;
+
+    }
+    
+    public HugeInteger subtract(HugeInteger h){
+        
+        HugeInteger difference = new HugeInteger();
+        HugeInteger minuend;
+        HugeInteger subtrahend;
+        int borrow = 0;
+        int diff;
+        int test = 0;
+
+        if(negative==0 && h.negative==1){
+            h.negative=0;
+            difference=add(h);
+            h.negative=1;
+            return difference;
+        }
+
+        if(negative==1 && h.negative==0){
+            h.negative=1;
+            difference=add(h);
+            h.negative=0;
+            return difference;
+        }
+
+        if(negative==1 && h.negative==1){
+            h.negative=0;negative=0;
+            difference=subtract(h);
+            
+            if(compareTo(h)==1)
+                difference.negative = 1;
+            
+            if(compareTo(h)==-1)
+                difference.negative = 0;
+            
+            h.negative=1;negative=1;
+            return difference;
+        }
+
+        if (negative==0 && h.negative==0){
+            
+            if (this.compareTo(h) == 1){
+                minuend = this;
+                subtrahend = h;
+            }
+            
+            else if (this.compareTo(h) == -1){
+                minuend = h;
+                subtrahend = this;
+            }
+            
+            else {
+                difference = new HugeInteger("0");
+                return difference;
+            }
+            
+            difference = new HugeInteger(minuend.size);
+            
+            for (int i=0; i<subtrahend.size; i++){
+                
+                diff = minuend.hugeint[i] - subtrahend.hugeint[i] - borrow;
+                
+                if (diff<0) {
+                    borrow = 1;
+                    difference.hugeint[i] = diff + 10;
+                }
+                
+                else {
+                    borrow = 0;
+                    difference.hugeint[i] = diff;
+                }            
+            }
+            
+            
+            if (minuend.size-subtrahend.size >0){   
+                
+                for (int i = subtrahend.size; i<minuend.size; i++){
+
+                    difference.hugeint[i] = minuend.hugeint[i];
+                }
+                
+                if (borrow == 1)
+                difference.hugeint[subtrahend.size] = minuend.hugeint[subtrahend.size] - 1;
+            
+            }
+            
+            for (int i = minuend.size-1; i>=0; i--) {
+                if (difference.hugeint[i] != 0) {
+                    difference.size = i+1;
+                    break;
+                }
+            }
+              
+            difference.negative = (compareTo(h)==1)?0:1;
+        }
+  
+        return difference;
+    }
+    
+    public HugeInteger multiply(HugeInteger h)
+    {
+        HugeInteger multiply = new HugeInteger();
+        multiply.size = size + h.size;
+        multiply.hugeint = new int[multiply.size];
+        
+        HugeInteger top;
+        HugeInteger bottom;
+        
+        if (size>h.size){
+            top = this;
+            bottom = h;
+        }
+        
+        else if (size<h.size){
+            top = h;
+            bottom = this;
+        }
+        
+        else{
+            top = this;
+            bottom = h;
+        }
+        
+        int i=top.size-1, j=bottom.size-1, k=multiply.size-1;
+        
+        int carry, value;
+        int counter,counter2;   
+        
+        for(counter2=0;counter2<=j;counter2++){
+            for(counter=0;counter<=i;counter++){
+                value=((bottom.hugeint[counter2])*(top.hugeint[counter]));                
+                multiply.hugeint[counter+counter2]+=(value);
+                carry= multiply.hugeint[counter+counter2]/10;               
+                multiply.hugeint[counter+counter2]%=10;  
+                multiply.hugeint[counter+counter2+1]+=carry;
+            }
+        }
+
+        if(negative==h.negative)
+            multiply.negative=0;
+        
+        if(negative!=h.negative)
+            multiply.negative=1;
+        
+        
+        for (int f = multiply.size-1; f>=0; f--) {
+                if (multiply.hugeint[f] != 0) {
+                    multiply.size = f+1;
+                    break;
+                }
+            }
+        return multiply;
+    }
+    
+    public int compareTo(HugeInteger h) {
+        
+        if (negative - h.negative != 0){
+            
+            return (negative == 1)? -1: 1;
+        }
+        
+        if (negative == 1) {
+        
+            if (size != h.size) 
+
+                return (size > h.size)? -1: 1;
+            
+            else
+                
+                for (int i = size-1; i>=0; i--){
+                    
+                    if (hugeint[i]>h.hugeint[i] && hugeint[i]!=h.hugeint[i])
+                        return -1;
+                
+                    else if (hugeint[i]<h.hugeint[i] && hugeint[i]!=h.hugeint[i])
+                        return 1;
+                    
+                }
+                
+            return 0;
+        
+        }
+        
+        if (size - h.size != 0)
+            return (size > h.size)? 1: -1;
+
+        else {
+            for (int i = size-1; i>=0; i--){
+                    
+                if (hugeint[i]>h.hugeint[i] && hugeint[i]!=h.hugeint[i])
+                    return 1;
+                
+                else if (hugeint[i]<h.hugeint[i] && hugeint[i]!=h.hugeint[i])
+                    return -1;
+                    
+            }
+        }
+        
+        return 0;
+    }
+    
+    public String toString() {
+        
+        String longString = "";
+        String add;
+        
+        
+        if (negative == 1)
+            longString = longString + '-';
+        
+        for (int i = size-1; i>=0; i--) {
+
+            longString = longString + (char)((hugeint[i])+48);
+        }
+
+        return longString;
+    }
+      
+
+}
